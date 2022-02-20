@@ -1,3 +1,4 @@
+# coding=utf-8
 import os
 from urllib.request import Request, quote, unquote, urlopen
 import urllib3
@@ -24,11 +25,18 @@ class DownloadThread(threading.Thread):
 
     def run(self):
         global save_dir
-        urllib.request.urlretrieve(self.aurl, save_dir + "\\" + str(self.times) + " " + titleb + ".mp4", huidiao)
+        urllib.request.urlretrieve(self.aurl, save_dir + "\\" + titleb + "\\" + str(self.times) + " " + titleb + ".mp4",
+                                   huidiao)
 
+def isMakeDir(path):
+    # åˆ›å»ºæ–‡ä»¶å¤¹
+    isExists = os.path.exists(path)
+    # åˆ¤æ–­ç»“æœ
+    if not isExists:
+        os.makedirs(path)
 
 def huidiao(block_num, block_size, total_size):
-    sys.stdout.write('\r>> ÕıÔÚÏÂÔØ´Ë·¬¾ç£¬×ÜÌå½ø¶È£º %.1f%%' % (float(block_num * block_size) / float(total_size) * 100.0))
+    sys.stdout.write('\r>> æ­£åœ¨ä¸‹è½½æ­¤ç•ªå‰§ï¼Œæ€»ä½“è¿›åº¦ï¼š %.1f%%' % (float(block_num * block_size) / float(total_size) * 100.0))
     sys.stdout.flush()
 
 
@@ -36,11 +44,11 @@ header = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
 }
 title = 0
-titleb = "Î´ÃüÃû"
-title_all_name = "Î´ÃüÃû"
+titleb = "æœªå‘½å"
+title_all_name = "æœªå‘½å"
 urls = []
 lines_num = []
-save_dir = input("ÇëÊäÈëÄ¬ÈÏ±£´æµÄÂ·¾¶£º")
+save_dir = input("è¯·è¾“å…¥é»˜è®¤ä¿å­˜çš„è·¯å¾„ï¼š")
 if save_dir == "":
     save_dir = "X:\hiden\Download"
 for line in open("urls.txt"):
@@ -48,11 +56,11 @@ for line in open("urls.txt"):
     l = line_num[0]
     lines_num.append(l)
 if not lines_num:
-    input("ÇëÔÚ¸ùÄ¿Â¼ÏÂurls.txtÎÄ¼şÊäÈëĞèÒªÏÂÔØµÄÍøÖ·£¡")
+    input("è¯·åœ¨æ ¹ç›®å½•ä¸‹urls.txtæ–‡ä»¶è¾“å…¥éœ€è¦ä¸‹è½½çš„ç½‘å€ï¼")
     exit(0)
 
 for vedioid in lines_num:
-    for i in range(1, 101):
+    for i in range(1, 99999):
         htmlurl = "http://www.yhdm.io/v/" + str(vedioid) + "-" + str(i) + ".html"
 
         r = requests.get(htmlurl, headers=header)
@@ -65,25 +73,26 @@ for vedioid in lines_num:
         if i == 1:
             if titlea == []:
                 print(soup)
-                print("Ã»ÓĞ»ñÈ¡µ½±êÌâĞÅÏ¢£¡")
+                print("æ²¡æœ‰è·å–åˆ°æ ‡é¢˜ä¿¡æ¯ï¼")
                 if titlea[0] == '404 Not':
-                    print("²éÑ¯±êÌâÊ±·µ»Ø404 Not Found.")
-                print("Ê¹ÓÃidºÅÀ´´úÌæ±êÌâ¡£")
+                    print("æŸ¥è¯¢æ ‡é¢˜æ—¶è¿”å›404 Not Found.")
+                print("ä½¿ç”¨idå·æ¥ä»£æ›¿æ ‡é¢˜ã€‚")
                 titleb = str(vedioid)
             else:
                 titleb = titlea[0]
-                print("»ñÈ¡µ½±êÌâ£º" + titleb)
+                print("è·å–åˆ°æ ‡é¢˜ï¼š" + titleb)
         if targetcontext == "":
-            print("µÚ" + str(i) + "¼¯ÅÀÈ¡Ê§°Ü")
+            print("ç¬¬" + str(i) + "é›†çˆ¬å–å¤±è´¥")
         else:
             if targetcontext == []:
-                print("¸Ã·¬¾çÊÓÆµµØÖ·È«²¿ÅÀÈ¡Íê±Ï£¡")
+                print("è¯¥ç•ªå‰§è§†é¢‘åœ°å€å…¨éƒ¨çˆ¬å–å®Œæ¯•ï¼")
                 break
             urls.append(targetcontext)
-            print("µÚ" + str(i) + "¼¯ÅÀÈ¡³É¹¦£¬url=" + str(targetcontext[0]) + "£¬±êÌâ£º" + titleb)
+            print("ç¬¬" + str(i) + "é›†çˆ¬å–æˆåŠŸï¼Œurl=" + str(targetcontext[0]) + "ï¼Œæ ‡é¢˜ï¼š" + titleb)
 
-    print("ÅÀÈ¡Íê±Ï£¬¿ªÊ¼ÏÂÔØ")
+    print("çˆ¬å–å®Œæ¯•ï¼Œå¼€å§‹ä¸‹è½½")
     threads = []
+    isMakeDir(save_dir + "\\" + titleb)
     for i in urls:
         title += 1
         aurl = unquote("".join(i), encoding='utf-8')
@@ -92,9 +101,10 @@ for vedioid in lines_num:
             thread.start()
             threads.append(thread)
         except:
-            print("\nµÚ" + str(title) + "¼¯ÏÂÔØÊ§°Ü", " ÇëÇóurl=" + aurl)
+            print("\nç¬¬" + str(title) + "é›†ä¸‹è½½å¤±è´¥", " è¯·æ±‚url=" + aurl)
     for t in threads:
         t.join()
-    print("-----------------------------\n·¬¾ç£º" + titleb + " ÏÂÔØÍê³É£¡\n-----------------------------")
-print("ËùÓĞ·¬¾ç¶¼ÏÂÔØÍê³É£¡")
+    print("-----------------------------\nç•ªå‰§ï¼š" + titleb + " ä¸‹è½½å®Œæˆï¼\n-----------------------------")
+    title = 0
+print("æ‰€æœ‰ç•ªå‰§éƒ½ä¸‹è½½å®Œæˆï¼")
 os.system("pause")
