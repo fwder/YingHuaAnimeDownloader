@@ -28,12 +28,14 @@ class DownloadThread(threading.Thread):
         urllib.request.urlretrieve(self.aurl, save_dir + "\\" + titleb + "\\" + str(self.times) + " " + titleb + ".mp4",
                                    huidiao)
 
+
 def isMakeDir(path):
     # 创建文件夹
     isExists = os.path.exists(path)
     # 判断结果
     if not isExists:
         os.makedirs(path)
+
 
 def huidiao(block_num, block_size, total_size):
     sys.stdout.write('\r>> 正在下载此番剧，总体进度： %.1f%%' % (float(block_num * block_size) / float(total_size) * 100.0))
@@ -60,6 +62,8 @@ if not lines_num:
     exit(0)
 
 for vedioid in lines_num:
+    print("\n\n\n-----------------------------\n番剧：" + titleb + " 开始下载！\n读取到番剧地址：http://www.yinghuacd.com/show/" + str(
+        vedioid) + ".html\n-----------------------------\n\n\n")
     for i in range(1, 99999):
         htmlurl = "http://www.yhdm.io/v/" + str(vedioid) + "-" + str(i) + ".html"
 
@@ -104,7 +108,7 @@ for vedioid in lines_num:
             print("\n第" + str(title) + "集下载失败", " 请求url=" + aurl)
     for t in threads:
         t.join()
-    print("-----------------------------\n番剧：" + titleb + " 下载完成！\n-----------------------------")
+    print("\n\n\n-----------------------------\n番剧：" + titleb + " 下载完成！\n-----------------------------\n\n\n")
     title = 0
 print("所有番剧都下载完成！")
 os.system("pause")
